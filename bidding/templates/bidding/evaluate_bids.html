@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Evaluate Bids{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 theme-container">
+    <h1 class="text-2xl font-semibold theme-heading mb-6">Evaluate Bids</h1>
+
+    {% if tenders %}
+    <div class="theme-feature shadow-md rounded-lg overflow-hidden">
+        <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+            {% for tender in tenders %}
+            <li class="px-4 py-4 sm:px-6 hover:bg-gray-50 dark:hover:bg-gray-800 transition duration-150">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center">
+                    <div class="mb-4 sm:mb-0">
+                        <h5 class="text-lg font-semibold theme-icon-primary hover:underline">
+                            <a href="#">{{ tender.title }}</a>
+                        </h5>
+                        <p class="theme-paragraph text-sm mb-2">{{ tender.description|truncatechars:150 }}</p>
+                        <div class="flex flex-wrap gap-4 text-sm">
+                            <span class="theme-text-muted flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                                    <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" />
+                                </svg>
+                                Total Bids: <span class="font-semibold">{{ tender.total_bids }}</span>
+                            </span>
+                            <span class="text-yellow-500 dark:text-yellow-400 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                </svg>
+                                Pending Evaluation: <span class="font-semibold">{{ tender.pending_bids }}</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <a href="{% url 'bidding:evaluate_bids_for_tender' tender.id %}" class="theme-button-primary inline-flex items-center px-4 py-2 rounded">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" />
+                            </svg>
+                            Evaluate Bids
+                        </a>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% else %}
+    <div class="theme-card-primary p-4 rounded-lg">
+        <div class="flex">
+            <div class="theme-icon-bg-primary p-2 rounded-full mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-icon-primary" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-1 9a1 1 0 01-1-1v-4a1 1 0 112 0v4a1 1 0 01-1 1z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div>
+                <p class="theme-paragraph"><strong>Info!</strong> You don't have any tenders with bids waiting for evaluation.</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

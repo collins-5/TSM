@@ -1,0 +1,423 @@
+{% extends 'base.html' %}
+
+{% block title %}Contracts{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+    /* Modern trending design styles */
+    .contracts-container {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        overflow: hidden;
+    }
+    
+    .contracts-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 2rem;
+        background-color: #f8fafc;
+        border-bottom: 1px solid #edf2f7;
+    }
+    
+    .contracts-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0;
+    }
+    
+    .btn-primary {
+        background-color: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 0.6rem 1.2rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .btn-primary:hover {
+        background-color: #2563eb;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
+    }
+    
+    .filter-panel {
+        background-color: #f8fafc;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1rem 2rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.03);
+    }
+    
+    .filter-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 1rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #64748b;
+        font-size: 0.875rem;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        transition: all 0.2s;
+    }
+    
+    .form-control:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        outline: none;
+    }
+    
+    .table-container {
+        padding: 0 2rem 2rem;
+    }
+    
+    .contracts-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+    
+    .contracts-table thead th {
+        background-color: #f8fafc;
+        color: #64748b;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 1rem;
+        text-align: left;
+        border-top: 1px solid #e2e8f0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .contracts-table tbody td {
+        padding: 1rem;
+        border-bottom: 1px solid #f1f5f9;
+        color: #334155;
+        font-size: 0.9rem;
+    }
+    
+    .contracts-table tbody tr:hover {
+        background-color: #f8fafc;
+    }
+    
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .status-active {
+        background-color: #dcfce7;
+        color: #166534;
+    }
+    
+    .status-completed {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+    
+    .status-pending {
+        background-color: #fef9c3;
+        color: #854d0e;
+    }
+    
+    .status-terminated {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-end;
+    }
+    
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+    
+    .btn-view {
+        color: #334155;
+        background-color: #f1f5f9;
+    }
+    
+    .btn-view:hover {
+        background-color: #e2e8f0;
+    }
+    
+    .btn-bids {
+        color: #334155;
+        background-color: #f1f5f9;
+    }
+    
+    .btn-bids:hover {
+        background-color: #e2e8f0;
+    }
+    
+    .btn-terminate {
+        color: #b91c1c;
+        background-color: #fee2e2;
+    }
+    
+    .btn-terminate:hover {
+        background-color: #fecaca;
+    }
+    
+    .termination-notice {
+        background-color: #fef2f2;
+        border-left: 4px solid #b91c1c;
+        padding: 1rem;
+        margin-top: -1px;
+    }
+    
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 4rem 0;
+        color: #94a3b8;
+    }
+    
+    .empty-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #cbd5e1;
+    }
+    
+    /* Dark mode styles */
+    body.dark .contracts-container {
+        background-color: #1e293b;
+    }
+    
+    body.dark .contracts-header {
+        background-color: #0f172a;
+        border-bottom-color: #334155;
+    }
+    
+    body.dark .contracts-title {
+        color: #f1f5f9;
+    }
+    
+    body.dark .filter-panel {
+        background-color: #0f172a;
+    }
+    
+    body.dark .filter-title {
+        color: #e2e8f0;
+    }
+    
+    body.dark .form-label {
+        color: #cbd5e1;
+    }
+    
+    body.dark .form-control {
+        background-color: #1e293b;
+        border-color: #334155;
+        color: #f1f5f9;
+    }
+    
+    body.dark .form-control:focus {
+        border-color: #3b82f6;
+    }
+    
+    body.dark .contracts-table thead th {
+        background-color: #0f172a;
+        color: #cbd5e1;
+        border-color: #334155;
+    }
+    
+    body.dark .contracts-table tbody td {
+        border-bottom-color: #1e293b;
+        color: #e2e8f0;
+    }
+    
+    body.dark .contracts-table tbody tr:hover {
+        background-color: #0f172a;
+    }
+    
+    body.dark .btn-view,
+    body.dark .btn-bids {
+        background-color: #334155;
+        color: #e2e8f0;
+    }
+    
+    body.dark .btn-view:hover,
+    body.dark .btn-bids:hover {
+        background-color: #475569;
+    }
+    
+    body.dark .empty-state {
+        color: #64748b;
+    }
+    
+    body.dark .empty-icon {
+        color: #475569;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto contracts-container">
+    <div class="contracts-header">
+        <h1 class="contracts-title">Contracts</h1>
+        <button class="btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterPanel">
+            <i class="fas fa-filter"></i>
+            <span>Filter</span>
+        </button>
+    </div>
+
+    <div class="collapse" id="filterPanel">
+        <div class="filter-panel">
+            <h5 class="filter-title">Filter Contracts</h5>
+            <form method="get" class="filter-form">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="form-group">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-control" id="status" name="status">
+                            <option value="">All Statuses</option>
+                            {% for status in contract_statuses %}
+                            <option value="{{ status.id }}" {% if request.GET.status == status.id|stringformat:"i" %}selected{% endif %}>{{ status.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="search" class="form-label">Search</label>
+                        <input type="text" class="form-control" id="search" name="search" placeholder="Contract ID, Title, etc." value="{{ request.GET.search }}">
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" class="btn-primary">
+                            Apply Filters
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="contracts-table">
+            <thead>
+                <tr>
+                    <th>Contract ID</th>
+                    <th>Title</th>
+                    <th>{% if is_buyer %}Supplier{% else %}Buyer{% endif %}</th>
+                    <th>Status</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Value</th>
+                    <th class="text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for contract in contracts %}
+                <tr>
+                    <td>{{ contract.contract_id }}</td>
+                    <td>{{ contract.title }}</td>
+                    <td>
+                        {% if is_buyer %}
+                            {{ contract.supplier.get_full_name }}
+                        {% else %}
+                            {{ contract.buyer.get_full_name }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="status-badge 
+                            {% if contract.status.name == 'Active' %}status-active
+                            {% elif contract.status.name == 'Completed' %}status-completed
+                            {% elif contract.status.name == 'Pending' %}status-pending
+                            {% elif contract.status.name == 'Terminated' %}status-terminated
+                            {% endif %}">
+                            {{ contract.status.name }}
+                        </span>
+                    </td>
+                    <td>{{ contract.start_date|date:"M d, Y" }}</td>
+                    <td>{{ contract.end_date|date:"M d, Y" }}</td>
+                    <td>${{ contract.total_value|floatformat:2 }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{% url 'contracts:contract_detail' contract.id %}" class="btn-action btn-view">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                            {% if contract.tender %}
+                            <a href="{% url 'bidding:bid_list' contract.tender.id %}" class="btn-action btn-bids">
+                                <i class="fas fa-list"></i> Bids
+                            </a>
+                            {% endif %}
+                            {% if is_buyer and contract.status.name != "Terminated" %}
+                            <a href="{% url 'contracts:contract_terminate' contract.id %}" class="btn-action btn-terminate">
+                                <i class="fas fa-ban"></i> Terminate
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% if contract.status.name == 'Terminated' and contract.termination_reason and not is_buyer %}
+                <tr>
+                    <td colspan="8" class="p-0">
+                        <div class="termination-notice">
+                            <div class="flex items-center">
+                                <div class="mr-3">
+                                    <i class="fas fa-exclamation-triangle text-red-600"></i>
+                                </div>
+                                <div>
+                                    <h6 class="font-semibold text-red-700 mb-1">Termination Notice:</h6>
+                                    <p class="text-red-600 text-sm">{{ contract.termination_reason }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endif %}
+                {% empty %}
+                <tr>
+                    <td colspan="8">
+                        <div class="empty-state">
+                            <i class="fas fa-file-contract empty-icon"></i>
+                            <p>No contracts found</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

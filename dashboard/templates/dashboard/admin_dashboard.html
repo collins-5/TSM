@@ -1,0 +1,277 @@
+<!-- dashboard/templates/dashboard/admin_dashboard.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 theme-container">
+    <h1 class="text-2xl font-bold mb-6 theme-heading">Admin Dashboard</h1>
+    
+    <!-- Summary cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+        <div class="rounded-lg shadow p-6 theme-card-primary">
+            <div class="flex items-center mb-2">
+                <div class="theme-icon-bg-primary p-2 rounded-full mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-icon-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold theme-heading">Total Users</h3>
+            </div>
+            <p class="text-3xl font-bold theme-paragraph">{{ total_users }}</p>
+        </div>
+        <div class="rounded-lg shadow p-6 theme-card-primary">
+            <div class="flex items-center mb-2">
+                <div class="theme-icon-bg-primary p-2 rounded-full mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-icon-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold theme-heading">Buyers</h3>
+            </div>
+            <p class="text-3xl font-bold theme-paragraph">{{ total_buyers }}</p>
+        </div>
+        <div class="rounded-lg shadow p-6 theme-card-primary">
+            <div class="flex items-center mb-2">
+                <div class="theme-icon-bg-primary p-2 rounded-full mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-icon-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold theme-heading">Suppliers</h3>
+            </div>
+            <p class="text-3xl font-bold theme-paragraph">{{ total_suppliers }}</p>
+        </div>
+        <div class="rounded-lg shadow p-6 theme-card-primary">
+            <div class="flex items-center mb-2">
+                <div class="theme-icon-bg-primary p-2 rounded-full mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-icon-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold theme-heading">Active Tenders</h3>
+            </div>
+            <p class="text-3xl font-bold theme-paragraph">{{ active_tenders }}</p>
+        </div>
+        <div class="rounded-lg shadow p-6 theme-card-primary">
+            <div class="flex items-center mb-2">
+                <div class="theme-icon-bg-primary p-2 rounded-full mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-icon-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold theme-heading">Total Contracts</h3>
+            </div>
+            <p class="text-3xl font-bold theme-paragraph">{{ total_contracts }}</p>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="rounded-lg shadow mb-8 theme-feature">
+        <div class="border-b px-6 py-4">
+            <h2 class="text-xl font-semibold theme-feature-heading">Quick Actions</h2>
+        </div>
+        <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a href="{% url 'accounts:user_management' %}" class="theme-button-primary text-center font-bold py-3 px-4 rounded flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                User Management
+            </a>
+            <a href="{% url 'admin:index' %}" class="theme-button-primary text-center font-bold py-3 px-4 rounded flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Admin Panel
+            </a>
+            <a href="{% url 'tenders:category_list' %}" class="theme-button-primary text-center font-bold py-3 px-4 rounded flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+                Manage Categories
+            </a>
+        </div>
+    </div>
+    
+    <!-- Recent users -->
+    <div class="rounded-lg shadow mb-8 theme-feature">
+        <div class="border-b px-6 py-4 flex justify-between items-center">
+            <h2 class="text-xl font-semibold theme-feature-heading">Recent Users</h2>
+            <a href="{% url 'accounts:user_management' %}" class="theme-icon-primary text-sm hover:underline flex items-center">
+                View All
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+        </div>
+        <div class="p-6 overflow-x-auto">
+            {% if recent_users %}
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead>
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium theme-text-muted uppercase tracking-wider">Username</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium theme-text-muted uppercase tracking-wider">Name</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium theme-text-muted uppercase tracking-wider">Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium theme-text-muted uppercase tracking-wider">Role</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium theme-text-muted uppercase tracking-wider">Joined</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium theme-text-muted uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        {% for user in recent_users %}
+                        <tr class="theme-paragraph">
+                            <td class="px-6 py-4 whitespace-nowrap">{{ user.username }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ user.get_full_name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ user.email }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {% if user.userprofile %}
+                                    <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">{{ user.userprofile.role|title }}</span>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ user.date_joined|date:"M d, Y" }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap flex space-x-2">
+                                <a href="{% url 'accounts:user_detail' user.id %}" class="theme-icon-primary hover:underline flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                </a>
+                                <a href="{% url 'accounts:user_edit' user.id %}" class="theme-icon-primary hover:underline flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="theme-paragraph">No recent users found.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Recent tenders -->
+    <div class="rounded-lg shadow mb-8 theme-feature">
+        <div class="border-b px-6 py-4 flex justify-between items-center">
+            <h2 class="text-xl font-semibold theme-feature-heading">Recent Tenders</h2>
+            <a href="{% url 'tenders:tender_list' %}" class="theme-icon-primary text-sm hover:underline flex items-center">
+                View All
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+        </div>
+        <div class="p-6 overflow-x-auto">
+            {% if recent_tenders %}
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead>
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium theme-text-muted uppercase tracking-wider">Reference</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium theme-text-muted uppercase tracking-wider">Title</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium theme-text-muted uppercase tracking-wider">Created By</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium theme-text-muted uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium theme-text-muted uppercase tracking-wider">Created</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium theme-text-muted uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        {% for tender in recent_tenders %}
+                        <tr class="theme-paragraph">
+                            <td class="px-6 py-4 whitespace-nowrap">{{ tender.reference_number }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ tender.title }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ tender.created_by.get_full_name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {% if tender.is_active %}
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                {% else %}
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Closed</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ tender.created_at|date:"M d, Y" }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap flex space-x-2">
+                                <a href="{% url 'tenders:tender_detail' tender.id %}" class="theme-icon-primary hover:underline flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                </a>
+                                <a href="{% url 'admin:tenders_tender_change' tender.id %}" class="theme-icon-primary hover:underline flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="theme-paragraph">No recent tenders found.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- System Health -->
+    <div class="rounded-lg shadow mt-8 theme-card-secondary">
+        <div class="border-b px-6 py-4">
+            <h2 class="text-xl font-semibold theme-heading">System Health</h2>
+        </div>
+        <div class="p-6">
+            <div class="flex items-center mb-4">
+                <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                <span class="theme-paragraph">All systems operational</span>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="p-4 rounded theme-testimonial">
+                    <div class="flex items-center mb-2">
+                        <div class="theme-testimonial-icon-bg p-2 rounded-full mr-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-testimonial-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                            </svg>
+                        </div>
+                        <h4 class="font-medium theme-paragraph">Database Status</h4>
+                    </div>
+                    <div class="flex items-center ml-9">
+                        <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                        <span class="theme-paragraph">Connected</span>
+                    </div>
+                </div>
+                
+                <div class="p-4 rounded theme-testimonial">
+                    <div class="flex items-center mb-2">
+                        <div class="theme-testimonial-icon-bg-alt p-2 rounded-full mr-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-testimonial-icon-alt" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                            </svg>
+                        </div>
+                        <h4 class="font-medium theme-paragraph">Storage</h4>
+                    </div>
+                    <div class="flex items-center ml-9">
+                        <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                        <span class="theme-paragraph">Normal</span>
+                    </div>
+                </div>
+                
+                <div class="p-4 rounded theme-testimonial">
+                    <div class="flex items-center mb-2">
+                        <div class="theme-testimonial-icon-bg p-2 rounded-full mr-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-testimonial-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <h4 class="font-medium theme-paragraph">Cache Status</h4>
+                    </div>
+                    <div class="flex items-center ml-9">
+                        <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                        <span class="theme-paragraph">Working</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

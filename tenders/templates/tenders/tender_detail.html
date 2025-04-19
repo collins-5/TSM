@@ -1,0 +1,162 @@
+<!-- tenders/templates/tenders/tender_detail.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 theme-container">
+    <div class="mb-6">
+        <a href="{% url 'tenders:tender_list' %}" class="theme-icon-primary hover:underline">
+            &larr; Back to Tenders
+        </a>
+    </div>
+    
+    <div class="theme-feature rounded-lg shadow overflow-hidden">
+        <!-- Header -->
+        <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold theme-heading">{{ tender.title }}</h1>
+            <div>
+                {% if tender.is_active %}
+                    {% if tender.is_deadline_passed %}
+                        <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                            Evaluation
+                        </span>
+                    {% else %}
+                        <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                            Open
+                        </span>
+                    {% endif %}
+                {% else %}
+                    <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                        Closed
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Tender info -->
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h2 class="text-lg font-semibold mb-2 theme-heading">Tender Details</h2>
+                    <table class="min-w-full">
+                        <tr>
+                            <td class="py-2 text-sm font-medium theme-text-muted">Reference Number:</td>
+                            <td class="py-2 theme-paragraph">{{ tender.reference_number }}</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-sm font-medium theme-text-muted">Created By:</td>
+                            <td class="py-2 theme-paragraph">{{ tender.created_by.username }}</td>
+                            <td class="py-2 theme-paragraph">{{ tender.created_by.email }}</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-sm font-medium theme-text-muted">Created On:</td>
+                            <td class="py-2 theme-paragraph">{{ tender.created_at|date:"M d, Y" }}</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-sm font-medium theme-text-muted">Submission Deadline:</td>
+                            <td class="py-2 theme-paragraph">{{ tender.submission_deadline|date:"M d, Y H:i" }}</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-sm font-medium theme-text-muted">Budget:</td>
+                            <td class="py-2 theme-paragraph">{{ tender.budget|default:"Not specified" }}</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-sm font-medium theme-text-muted">Categories:</td>
+                            <td class="py-2">
+                                {% for category in tender.categories.all %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 mr-1">
+                                        {{ category.name }}
+                                    </span>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div>
+                    
+                    <div class="space-y-2">
+                       
+                        {% if is_owner %}
+                         <h2 class="text-lg font-semibold mb-2 theme-heading">Actions</h2>
+                            {% if tender.is_active and not tender.is_deadline_passed %}
+                                <a href="{% url 'tenders:tender_update' tender.pk %}" class="block w-full text-center theme-button-primary font-bold py-2 px-4 rounded">
+                                    Edit Tender
+                                </a>
+                                <a href="{% url 'tenders:tender_add_document' tender.pk %}" class="block w-full text-center theme-button-secondary font-bold py-2 px-4 rounded">
+                                    Add Document
+                                </a>
+                            {% endif %}
+                            {% if is_owner and tender.is_active %}
+                                <a href="{% url 'tenders:tender_close' tender.pk %}" class="btn btn-danger block w-full text-center theme-button-secondary font-bold py-2 px-4 rounded">Close Tender</a>
+                            {% endif %}
+                            
+                            {% if tender.is_deadline_passed %}
+                                <a href="{% url 'bidding:bid_list' %}?tender={{ tender.pk }}" class="block w-full text-center theme-button-primary font-bold py-2 px-4 rounded">
+                                    View Bids
+                                </a>
+                            {% endif %}
+                        {% elif user.is_authenticated and user.userprofile.role == 'supplier' %}
+                            {% if tender.is_active and not tender.is_deadline_passed %}
+                                {% if not has_bid %}
+                                    <a href="{% url 'bidding:bid_create' %}?tender={{ tender.pk }}" class="block w-full text-center theme-button-primary font-bold py-2 px-4 rounded">
+                                        Submit Bid
+                                    </a>
+                                {% else %}
+                                    <div class="block w-full text-center bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-200 font-bold py-2 px-4 rounded">
+                                        Bid Submitted
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Description and requirements -->
+            <div class="mt-8">
+                <h2 class="text-lg font-semibold mb-2 theme-heading">Description</h2>
+                <div class="bg-gray-50 dark:bg-gray-800 rounded p-4 mb-6 theme-paragraph">
+                   <span style="color: #fcf8f8;">{{ tender.description|linebreaks }}</span> 
+                </div>
+                
+                <h2 class="text-lg font-semibold mb-2 theme-heading">Requirements</h2>
+                <div class="bg-gray-50 dark:bg-gray-800 rounded p-4 theme-paragraph">
+                   <span style="color: #fcf8f8;">{{ tender.requirements|linebreaks }}</span> 
+                </div>
+            </div>
+            
+            <!-- Documents -->
+            <div class="mt-8">
+                <h2 class="text-lg font-semibold mb-2 theme-heading">Documents</h2>
+                
+                {% if documents %}
+                    <div class="bg-gray-50 dark:bg-gray-800 rounded p-4">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr>
+                                    <th class="text-left py-2 theme-text-muted">Title</th>
+                                    <th class="text-left py-2 theme-text-muted">Uploaded</th>
+                                    <th class="text-left py-2 theme-text-muted">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for document in documents %}
+                                <tr  class="border-t border-gray-200 dark:border-gray-700">
+                                    <td style="color: #fcf8f8;"class="py-2 theme-paragraph">{{ document.title }}</td>
+                                    <td style="color: #fcf8f8;"class="py-2 theme-paragraph">{{ document.uploaded_at|date:"M d, Y" }}</td>
+                                    <td class="py-2">
+                                        <a href="{{ document.file.url }}" class="theme-icon-primary hover:underline" download>Download</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="theme-paragraph">No documents available for this tender.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

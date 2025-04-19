@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mx-auto px-4 py-8 theme-container">
+    <div class="mb-6 flex justify-between items-center">
+        <div>
+            <h1 class="text-2xl font-bold mb-2 theme-heading">{{ contract.title }}</h1>
+            <div class="flex items-center">
+                <span class="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full 
+                      {% if contract.status.name == 'Draft' %}bg-gray-100 text-gray-800
+                      {% elif contract.status.name == 'Sent' %}bg-blue-100 text-blue-800
+                      {% elif contract.status.name == 'Signed' %}bg-green-100 text-green-800
+                      {% elif contract.status.name == 'Active' %}bg-green-100 text-green-800
+                      {% elif contract.status.name == 'Completed' %}bg-purple-100 text-purple-800
+                      {% elif contract.status.name == 'Terminated' %}bg-red-100 text-red-800
+                      {% elif contract.status.name == 'Cancelled' %}bg-red-100 text-red-800
+                      {% else %}bg-gray-100 text-gray-800{% endif %}">
+                    {{ contract.status.name }}
+                </span>
+                {% if contract.tender %}
+                    <a href="{% url 'tenders:tender_detail' contract.tender.id %}" class="ml-4 text-blue-600 text-sm hover:text-blue-800 theme-icon-primary">
+                        View Original Tender
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        {% if is_buyer %}
+        <div class="flex space-x-3">
+            <a href="{% url 'contracts:contract_update' contract.id %}" class="px-4 py-2 theme-button-primary rounded-md">
+                Edit Contract
+            </a>
+            <a href="{% url 'contracts:contract_status_update' contract.id %}" class="px-4 py-2 theme-button-primary rounded-md">
+                Update Status
+            </a>
+            <a href="{% url 'contracts:contract_terminate' contract.pk %}" class="px-4 py-2 theme-button-secondary rounded-md">
+                Terminate Contract
+            </a>
+            {% if contract.status.name == "Active" and is_buyer %}
+            <a href="{% url 'orders:order_create' contract.id %}" class="px-4 py-2 theme-button-primary rounded-md">
+                Create New Order
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="md:col-span-2">
+            <div class="theme-card-primary shadow-md rounded-lg p-6 mb-6">
+                <h2 class="text-xl font-semibold mb-4 theme-heading">Contract Details</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <h3 class="text-sm font-medium theme-text-muted">Buyer</h3>
+                        <p class="theme-paragraph">{{ contract.buyer.username }}</p>
+                        <p class="theme-paragraph">{{ contract.buyer.email }}</p>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-medium theme-text-muted">Supplier</h3>
+                        <p class="theme-paragraph">{{ contract.supplier.company_name }}</p>
+                        <p class="theme-paragraph">{{ contract.supplier.email }}</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <h3 class="text-sm font-medium theme-text-muted">Start Date</h3>
+                        <p class="theme-paragraph">{{ contract.start_date|date:"M d, Y" }}</p>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-medium theme-text-muted">End Date</h3>
+                        <p class="theme-paragraph">{{ contract.end_date|date:"M d, Y" }}</p>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h3 class="text-sm font-medium theme-text-muted">Total Value</h3>
+                    <p class="theme-paragraph">${{ contract.total_value|floatformat:2 }}</p>
+                </div>
+                
+                <div class="mb-4">
+                    <h3 class="text-sm font-medium theme-text-muted">Scope of Work</h3>
+                    <div class="mt-1 prose theme-paragraph">{{ contract.scope_of_work|linebreaks }}</div>
+                </div>
+                
+                <div class="mb-4">
+                    <h3 class="text-sm font-medium theme-text-muted">Payment Terms</h3>
+                    <div class="mt-1 prose theme-paragraph">{{ contract.payment_terms|linebreaks }}</div>
+                </div>
+                
+                <div>
+                    <h3 class="text-sm font-medium theme-text-muted">Terms and Conditions</h3>
+                    <div class="mt-1 prose theme-paragraph">{{ contract.terms_and_conditions|linebreaks }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            <div class="theme-card-secondary shadow-md rounded-lg p-6 mb-6">
+                <h2 class="text-xl font-semibold mb-4 theme-heading">Contract Documents</h2>
+                
+                {% if documents %}
+                    <ul class="divide-y divide-gray-200">
+                        {% for doc in documents %}
+                            <li class="py-3">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <h3 class="text-sm font-medium theme-paragraph">{{ doc.title }}</h3>
+                                        <div class="flex items-center text-xs theme-text-muted">
+                                            <span class="mr-2">{{ doc.get_document_type_display }}</span>
+                                            <span>{{ doc.uploaded_at|date:"M d, Y" }}</span>
+                                        </div>
+                                    </div>
+                                    <a href="{{ doc.document.url }}" class="theme-icon-primary hover:underline" download>
+                                        Download
+                                    </a>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="theme-text-muted">No documents uploaded yet.</p>
+                {% endif %}
+                
+                {% if can_upload %}
+                    <hr class="my-4 border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-medium mb-3 theme-heading">Upload Document</h3>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="hidden" name="upload" value="1">
+                        
+                        <div class="mb-3">
+                            <label for="{{ document_form.title.id_for_label }}" class="block text-sm font-medium theme-text-muted mb-1">
+                                Title
+                            </label>
+                            {{ document_form.title }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ document_form.document_type.id_for_label }}" class="block text-sm font-medium theme-text-muted mb-1">
+                                Document Type
+                            </label>
+                            {{ document_form.document_type }}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="{{ document_form.document.id_for_label }}" class="block text-sm font-medium theme-text-muted mb-1">
+                                File
+                            </label>
+                            {{ document_form.document }}
+                        </div>
+                        
+                        <button type="submit" class="w-full px-4 py-2 theme-button-primary rounded-md">
+                            Upload Document
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+            <div class="theme-card-secondary shadow-md rounded-lg p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold theme-heading">Related Orders</h2>
+                    {% if contract.status.name == "Active" and is_buyer %}
+                    <a href="{% url 'orders:order_create' contract.id %}" class="px-4 py-2 theme-button-sm-primary rounded-md">
+                        Create Order
+                    </a>
+                    {% endif %}
+                </div>
+                
+                {% if contract.orders.exists %}
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead>
+                                <tr>
+                                    <th class="px-3 py-2 text-left text-xs font-medium theme-text-muted uppercase tracking-wider">Order Number</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium theme-text-muted uppercase tracking-wider">Date</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium theme-text-muted uppercase tracking-wider">Amount</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium theme-text-muted uppercase tracking-wider">Status</th>
+                                    <th class="px-3 py-2"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                {% for order in contract.orders.all %}
+                                <tr>
+                                    <td class="px-3 py-2 whitespace-nowrap text-sm theme-paragraph">{{ order.order_number }}</td>
+                                    <td class="px-3 py-2 whitespace-nowrap text-sm theme-paragraph">{{ order.created_at|date:"M d, Y" }}</td>
+                                    <td class="px-3 py-2 whitespace-nowrap text-sm theme-paragraph">${{ order.total_amount }}</td>
+                                    <td class="px-3 py-2 whitespace-nowrap text-sm">
+                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
+                                            {% if order.status.name == 'Pending' %}bg-yellow-100 text-yellow-800
+                                            {% elif order.status.name == 'Approved' %}bg-green-100 text-green-800
+                                            {% elif order.status.name == 'Rejected' %}bg-red-100 text-red-800
+                                            {% elif order.status.name == 'Completed' %}bg-blue-100 text-blue-800
+                                            {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                            {{ order.status.name }}
+                                        </span>
+                                    </td>
+                                    <td class="px-3 py-2 whitespace-nowrap text-sm text-right">
+                                        <a href="{% url 'orders:order_detail' order.id %}" class="text-indigo-600 hover:text-indigo-900">
+                                            View
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="theme-text-muted">No orders have been created for this contract yet.</p>
+                {% endif %}
+            </div>
+            </div>
+            
+            <div class="theme-feature shadow-md rounded-lg p-6">
+                <h2 class="text-xl font-semibold mb-4 theme-feature-heading">Contract Timeline</h2>
+                <ul class="space-y-3">
+                    <li class="flex items-start">
+                        <div class="flex-shrink-0 h-5 w-5 rounded-full theme-feature-icon-bg mt-1">
+                            <div class="h-full w-full rounded-full theme-feature-icon"></div>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm font-medium theme-paragraph">Contract Created</p>
+                            <p class="text-xs theme-text-muted">{{ contract.created_at|date:"M d, Y H:i" }}</p>
+                        </div>
+                    </li>
+                    <!-- Additional timeline events would be added here -->
+                </ul>
+            </div>
+        </div>
+    </div>
+   
+</div>
+{% endblock %}

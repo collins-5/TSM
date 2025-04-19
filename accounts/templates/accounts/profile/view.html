@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white p-8 rounded shadow-md mt-6">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-semibold">My Profile</h2>
+        <a href="{% url 'accounts:profile_edit' %}" class="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md focus:outline-none">
+            Edit Profile
+        </a>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="md:col-span-1">
+            <div class="bg-gray-100 p-4 rounded text-center">
+                {% if profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="w-32 h-32 mx-auto rounded-full object-cover">
+                {% else %}
+                    <div class="w-32 h-32 mx-auto rounded-full bg-gray-300 flex items-center justify-center">
+                        <span class="text-3xl text-gray-600">{{ user.username.0|upper }}</span>
+                    </div>
+                {% endif %}
+                <h3 class="mt-4 text-xl font-semibold">{{ user.get_full_name|default:user.username }}</h3>
+                <p class="text-gray-600">{{ user.get_user_type_display }}</p>
+                <p class="text-gray-600">{{ user.company_name }}</p>
+            </div>
+        </div>
+        
+        <div class="md:col-span-2">
+            <div class="bg-gray-100 p-6 rounded">
+                <h3 class="text-xl font-semibold mb-4">Account Information</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-gray-600">Username</p>
+                        <p class="font-medium">{{ user.username }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Email</p>
+                        <p class="font-medium">{{ user.email }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Phone Number</p>
+                        <p class="font-medium">{{ user.phone_number|default:"Not provided" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Member Since</p>
+                        <p class="font-medium">{{ user.date_joined|date:"F j, Y" }}</p>
+                    </div>
+                </div>
+                
+                <h3 class="text-xl font-semibold mt-6 mb-4">Contact Information</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-gray-600">Address</p>
+                        <p class="font-medium">{{ profile.address|default:"Not provided" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">City</p>
+                        <p class="font-medium">{{ profile.city|default:"Not provided" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">State/Province</p>
+                        <p class="font-medium">{{ profile.state|default:"Not provided" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Country</p>
+                        <p class="font-medium">{{ profile.country|default:"Not provided" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Postal Code</p>
+                        <p class="font-medium">{{ profile.postal_code|default:"Not provided" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Tax ID</p>
+                        <p class="font-medium">{{ profile.tax_id|default:"Not provided" }}</p>
+                    </div>
+                </div>
+                
+                {% if user.is_buyer %}
+                <h3 class="text-xl font-semibold mt-6 mb-4">Buyer Information</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-gray-600">Department</p>
+                        <p class="font-medium">{{ profile.department|default:"Not provided" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Position</p>
+                        <p class="font-medium">{{ profile.position|default:"Not provided" }}</p>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if user.is_supplier %}
+                <h3 class="text-xl font-semibold mt-6 mb-4">Supplier Information</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-gray-600">Business Category</p>
+                        <p class="font-medium">{{ profile.business_category|default:"Not provided" }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Years in Business</p>
+                        <p class="font-medium">{{ profile.years_in_business|default:"0" }}</p>
+                    </div>
+                </div>
+                
+                <!-- Supplier Categories Section -->
+                <div class="mt-4">
+                    <p class="text-gray-600 mb-2">Supplier Categories</p>
+                    {% if user.supplier_profile.categories.all %}
+                        <div class="flex flex-wrap gap-2">
+                            {% for category in user.supplier_profile.categories.all %}
+                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                                    {{ category.name }}
+                                </span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="font-medium text-yellow-600">No categories selected. 
+                            <a href="{% url 'suppliers:supplier_profile_edit' %}" class="text-blue-600 hover:underline">
+                                Add categories
+                            </a>
+                        </p>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-6 text-center">
+        <a href="{% url 'accounts:password_change' %}" class="text-blue-600 hover:underline">Change Password</a>
+    </div>
+</div>
+{% endblock %}

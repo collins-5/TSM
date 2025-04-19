@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white p-8 rounded shadow-md mt-6">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-semibold">Edit Profile</h2>
+        <a href="{% url 'accounts:profile' %}" class="py-2 px-4 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg shadow-md focus:outline-none">
+            Cancel
+        </a>
+    </div>
+    
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        
+        <div class="bg-gray-100 p-6 rounded mb-6">
+            <h3 class="text-xl font-semibold mb-4">Account Information</h3>
+            {{ user_form|crispy }}
+        </div>
+        
+        <div class="bg-gray-100 p-6 rounded">
+            <h3 class="text-xl font-semibold mb-4">Profile Information</h3>
+            {{ profile_form|crispy }}
+        </div>
+        
+        <div class="mt-6 text-center">
+            <button type="submit" class="py-2 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md focus:outline-none">
+                Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

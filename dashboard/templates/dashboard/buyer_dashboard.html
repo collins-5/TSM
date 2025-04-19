@@ -1,0 +1,476 @@
+<!-- dashboard/templates/dashboard/buyer_dashboard.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="theme-container container mx-auto px-4 py-8 transition-all duration-300">
+    <!-- Header with theme toggle -->
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="theme-heading text-3xl font-bold"> WELCOME! {{ user.get_full_name|default:user.username }}</h1>
+        <h6></h6>
+        <div class="flex items-center space-x-4">
+            
+            <!-- Tender operations buttons -->
+            <div class="flex space-x-3">
+                <a href="{% url 'tenders:tender_create' %}" class="theme-button-primary font-medium py-2 px-4 rounded flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Create Tender
+                </a>
+                <a href="{% url 'tenders:tender_list' %}" class="theme-button-secondary font-medium py-2 px-4 rounded flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    All Tenders
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Summary cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        
+        <div class="theme-card-primary rounded-lg shadow-lg p-6 transform hover:scale-105 transition-transform duration-300">
+            <div class="flex items-center">
+                <div class="theme-icon-bg-primary p-3 rounded-full mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 theme-icon-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold theme-heading">Active Tenders</h3>
+                    <p class="text-3xl font-bold theme-heading">{{ active_tenders }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="theme-card-secondary rounded-lg shadow-lg p-6 transform hover:scale-105 transition-transform duration-300">
+            <div class="flex items-center">
+                <div class="theme-icon-bg-secondary p-3 rounded-full mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 theme-icon-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold theme-heading">Closed Tenders</h3>
+                    <p class="text-3xl font-bold theme-heading">{{ closed_tenders }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="theme-card-primary rounded-lg shadow-lg p-6 transform hover:scale-105 transition-transform duration-300">
+            <div class="flex items-center">
+                <div class="theme-icon-bg-primary p-3 rounded-full mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 theme-icon-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold theme-heading">Active Contracts</h3>
+                    <p class="text-3xl font-bold theme-heading">{{ active_contracts }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="theme-card-secondary rounded-lg shadow-lg p-6 transform hover:scale-105 transition-transform duration-300">
+            <div class="flex items-center">
+                <div class="theme-icon-bg-secondary p-3 rounded-full mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 theme-icon-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold theme-heading">Pending Orders</h3>
+                    <p class="text-3xl font-bold theme-heading">{{ pending_orders }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent tenders section -->
+    <div class="theme-feature rounded-lg shadow-lg mb-8 overflow-hidden">
+        <div class="border-b px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="theme-feature-icon-bg p-2 rounded-full mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-feature-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                </div>
+                <h2 class="text-xl font-semibold theme-feature-heading">Recent Tenders</h2>
+            </div>
+            <a href="{% url 'tenders:tender_list' %}" class="theme-icon-primary hover:underline flex items-center">
+                View All 
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+            </a>
+        </div>
+        <div class="p-6">
+            {% if recent_tenders %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Title</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Created</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                            {% for tender in recent_tenders %}
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
+                                <td class="px-6 py-4 whitespace-nowrap theme-paragraph">{{ tender.title }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    {% if tender.is_active %}
+                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Active</span>
+                                    {% else %}
+                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200">Closed</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap theme-paragraph">{{ tender.created_at|date:"M d, Y" }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap flex space-x-2">
+                                    <a href="{% url 'tenders:tender_detail' tender.id %}" class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-200 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        View
+                                    </a>
+                                    <a href="{% url 'tenders:tender_update' tender.id %}" class="text-yellow-600 dark:text-yellow-400 hover:text-yellow-900 dark:hover:text-yellow-200 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                        Edit
+                                    </a>
+                                    <a href="{% url 'tenders:tender_add_document' tender.id %}" class="text-green-600 dark:text-green-400 hover:text-green-900 dark:hover:text-green-200 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        Add Doc
+                                    </a>
+                                {% if is_owner and tender.is_active %}
+                                <a href="{% url 'tenders:tender_close' tender.pk %}" class="btn btn-danger theme-button-secondary flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Close Tender
+                                </a>
+                               {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-8">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-gray-400 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <p class="theme-paragraph mt-4 mb-6">No recent tenders found.</p>
+                    <a href="{% url 'tenders:tender_create' %}" class="theme-button-primary inline-flex items-center px-4 py-2 rounded-md shadow-sm text-sm font-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Create Your First Tender
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Bids Awaiting Evaluation -->
+    <div class="theme-feature rounded-lg shadow-lg mb-8 overflow-hidden">
+        <div class="border-b px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="theme-feature-icon-bg p-2 rounded-full mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-feature-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h2 class="text-xl font-semibold theme-feature-heading">Bids Awaiting Evaluation</h2>
+            </div>
+            <a href="{% url 'bidding:evaluate_bids' %}" class="theme-icon-primary hover:underline flex items-center">
+                View All 
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+            </a>
+        </div>
+        <div class="p-6">
+            {% if pending_evaluation_tenders %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Tender</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Bids</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Deadline</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                            {% for tender in pending_evaluation_tenders %}
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
+                                <td class="px-6 py-4 whitespace-nowrap theme-paragraph">{{ tender.title }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                        {{ tender.bid_set.count }} bids
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap theme-paragraph">{{ tender.submission_deadline|date:"M d, Y" }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <a href="{% url 'bidding:evaluate_bids_for_tender' tender.id %}" class="theme-button-primary text-sm px-3 py-1 rounded flex items-center w-fit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                                        </svg>
+                                        Evaluate Bids
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p class="theme-paragraph mt-3">No tenders with pending bid evaluations.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Recent contracts section -->
+    <div class="theme-feature rounded-lg shadow-lg mb-8 overflow-hidden">
+        <div class="border-b px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="theme-feature-icon-bg p-2 rounded-full mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-feature-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <h2 class="text-xl font-semibold theme-feature-heading">Recent Contracts</h2>
+            </div>
+            <a href="{% url 'contracts:contract_list' %}" class="theme-icon-primary hover:underline flex items-center">
+                View All 
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+            </a>
+        </div>
+        <div class="p-6">
+            {% if recent_contracts %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Title</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Supplier</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                            {% for contract in recent_contracts %}
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
+                                <td class="px-6 py-4 whitespace-nowrap theme-paragraph">{{ contract.title }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap theme-paragraph">{{ contract.supplier.get_full_name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    {% if contract.status.name == 'Active' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                    {% elif contract.status.name == 'Completed' %}bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                                    {% elif contract.status.name == 'Terminated' %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                                    {% else %}bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200{% endif %}">
+                                        {{ contract.status.name }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <a href="{% url 'contracts:contract_detail' contract.id %}" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-200 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <p class="theme-paragraph mt-3">No recent contracts found.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="theme-feature rounded-lg shadow-lg mb-8 overflow-hidden">
+        <div class="border-b px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="theme-feature-icon-bg p-2 rounded-full mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-feature-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h5m-5 3l2 3m0-6l-2-3M6 21h12a2 2 0 002-2V9a2 2 0 00-2-2h-3m-6 3H7m6 3h6m-9-9L2 7m16 3l-5-5M6 9l2-2M18 7l-2 2" />
+                    </svg>
+                </div>
+                <h2 class="text-xl font-semibold theme-feature-heading">Recent Orders</h2>
+            </div>
+            <a href="{% url 'orders:order_list' %}" class="theme-icon-primary hover:underline flex items-center">
+                View All
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+            </a>
+        </div>
+        <div class="p-6">
+            {% if recent_orders %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Order ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Contract</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Total Amount</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Created At</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                            {% for order in recent_orders %}
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
+                                <td class="px-6 py-4 whitespace-nowrap theme-paragraph">{{ order.order_id }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap theme-paragraph">{{ order.contract.title }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap theme-paragraph">${{ order.total_amount }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
+                                    {% if order.status.name == 'Pending' %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                                    {% elif order.status.name == 'Processing' %}bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200
+                                    {% elif order.status.name == 'Delivered' %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                    {% elif order.status.name == 'Cancelled' %}bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                                    {% else %}bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200{% endif %}">
+                                        {{ order.status.name }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap theme-paragraph">{{ order.created_at|date:"M d, Y" }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <a href="{% url 'orders:order_detail' order.id %}" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-200 flex items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h5m-5 3l2 3m0-6l-2-3M6 21h12a2 2 0 002-2V9a2 2 0 00-2-2h-3m-6 3H7m6 3h6m-9-9L2 7m16 3l-5-5M6 9l2-2M18 7l-2 2" />
+                    </svg>
+                    <p class="theme-paragraph mt-3">No recent orders found.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Bidding Analytics -->
+    <div class="theme-feature rounded-lg shadow-lg mb-8 overflow-hidden">
+        <div class="border-b px-6 py-4">
+            <div class="flex items-center">
+                <div class="theme-feature-icon-bg p-2 rounded-full mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-feature-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                </div>
+                <h2 class="text-xl font-semibold theme-feature-heading">Bidding Analytics</h2>
+            </div>
+        </div>
+        <div class="p-6">
+            <div class="mb-6">
+                <h3 class="text-lg font-medium mb-4 theme-heading">Bid Performance</h3>
+                <div class="h-64 bg-gray-50 dark:bg-gray-800 rounded-lg p-4 transition-colors duration-300" id="bidChart">
+                    <!-- Chart placeholder with loading animation -->
+                    <div class="flex items-center justify-center h-full">
+                        <div class="text-center">
+                            <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-600 animate-pulse" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                            <p class="mt-3 text-sm theme-text-muted">Loading chart data...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 transform hover:scale-105 transition-transform duration-300">
+                    <div class="flex items-center mb-2">
+                        <div class="theme-icon-bg-primary p-2 rounded-full mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-icon-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                            </svg>
+                        </div>
+                        <h4 class="font-medium theme-heading">Bid Success Rate</h4>
+                    </div>
+                    <p class="text-3xl font-bold theme-heading">{{ bid_success_rate }}%</p>
+                    <div class="mt-2 text-sm theme-text-muted">vs previous period</div>
+                    <div class="mt-1 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                        <span class="text-sm text-green-500 font-medium ml-1">8.2%</span>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 transform hover:scale-105 transition-transform duration-300">
+                    <div class="flex items-center mb-2">
+                        <div class="theme-icon-bg-secondary p-2 rounded-full mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-icon-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h4 class="font-medium theme-heading">Average Bid Value</h4>
+                    </div>
+                    <p class="text-3xl font-bold theme-heading">${{ avg_bid_value }}</p>
+                    <div class="mt-2 text-sm theme-text-muted">vs previous period</div>
+                    <div class="mt-1 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                        <span class="text-sm text-green-500 font-medium ml-1">5.3%</span>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700 transform hover:scale-105 transition-transform duration-300">
+                    <div class="flex items-center mb-2">
+                        <div class="theme-icon-bg-primary p-2 rounded-full mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-icon-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <h4 class="font-medium theme-heading">Total Contract Value</h4>
+                    </div>
+                    <p class="text-3xl font-bold theme-heading">${{ total_contract_value }}</p>
+                    <div class="mt-2 text-sm theme-text-muted">vs previous period</div>
+                    <div class="mt-1 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                        <span class="text-sm text-green-500 font-medium ml-1">12.7%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

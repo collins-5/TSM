@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="p-6 border-b">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold">Bid Comparison</h1>
+                <a href="{% url 'bid_list' tender.id %}" class="text-blue-600 hover:underline">Back to Bid List</a>
+            </div>
+            <p class="text-gray-600 mt-1">Tender: {{ tender.title }}</p>
+        </div>
+        
+        <div class="p-6">
+            {% if bids %}
+                <!-- Comparison Table -->
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white">
+                        <thead>
+                            <tr>
+                                <th class="py-3 px-4 text-left text-gray-700 font-semibold">Supplier</th>
+                                <th class="py-3 px-4 text-left text-gray-700 font-semibold">Amount</th>
+                                <th class="py-3 px-4 text-left text-gray-700 font-semibold">Delivery Time</th>
+                                <th class="py-3 px-4 text-left text-gray-700 font-semibold">Supplier Rating</th>
+                                <th class="py-3 px-4 text-left text-gray-700 font-semibold">Your Evaluation</th>
+                                <th class="py-3 px-4 text-left text-gray-700 font-semibold">Status</th>
+                                <th class="py-3 px-4 text-left text-gray-700 font-semibold">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bid in bids %}
+                                <tr class="border-t {% if bid.is_selected %}bg-green-50{% endif %}">
+                                    <td class="py-3 px-4">
+                                        <a href="{% url 'supplier_detail' bid.supplier.supplierprofile.pk %}" class="text-blue-600 hover:underline">
+                                            {{ bid.supplier.supplierprofile.company_name }}
+                                        </a>
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        {{ bid.amount }} {{ tender.currency }}
+                                        {% if bid.amount == bids|dictsort:"amount"|first.amount %}
+                                            <span class="ml-1 text-green-600 text-xs font-semibold">Lowest</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        {{ bid.delivery_time }} days
+                                        {% if bid.delivery_time == bids|dictsort:"delivery_time"|first.delivery_time %}
+                                            <span class="ml-1 text-green-600 text-xs font-semibold">Fastest</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <div class="flex items-center">
+                                            <div class="text-yellow-500">
+                                                {% with rating=bid.supplier.supplierprofile.ratings.all|dictsort:"rating"|first %}
+                                                {% for i in "12345" %}
+                                                    {% if forloop.counter <= rating.rating|default:0|floatformat:"0" %}
+                                                        <svg class="w-4 h-4 fill-current inline-block" viewBox="0 0 24 24">
+                                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+                                                        </svg>
+                                                    {% else %}
+                                                        <svg class="w-4 h-4 fill-current inline-block text-gray-300" viewBox="0 0 24 24">
+                                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+                                                        </svg>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% endwith %}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        {% if bid.evaluation %}
+                                            <span class="font-medium">{{ bid.evaluation.score }}/10</span>
+                                        {% else %}
+                                            <span class="text-gray-500">Not evaluated</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        {% if bid.is_selected %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                Selected
+                                            </span>
+                                        {% elif tender.status == 'closed' %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                Not Selected
+                                            </span>
+                                        {% else %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                                Pending
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="py-3 px-4">
+                                        <div class="flex space-x-2">
+                                            <a href="{% url 'bid_detail' bid.pk %}" class="text-blue-600 hover:text-blue-800">
+                                                View
+                                            </a>
+                                            
+                                            {% if tender.status == 'open' and not bid.is_selected %}
+                                                <form method="post" action="{% url 'select_bid' bid.pk %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="text-green-600 hover:text-green-800">
+                                                        Select
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-gray-600 text-center">No bids have been submitted for this tender yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

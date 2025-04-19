@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+
+{% block title %}Print Order #{{ order.order_number }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    @media print {
+        body {
+            font-size: 12pt;
+            color: #000;
+            background-color: #fff;
+        }
+        
+        .no-print {
+            display: none !important;
+        }
+        
+        .page-header, .page-footer {
+            display: block;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .print-section {
+            page-break-inside: avoid;
+        }
+    }
+    
+    .print-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .company-logo {
+        height: 60px;
+        margin-bottom: 15px;
+    }
+    
+    .order-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+    }
+    
+    .meta-group {
+        flex: 1;
+    }
+    
+    .meta-item {
+        margin-bottom: 8px;
+    }
+    
+    .meta-label {
+        font-weight: bold;
+        display: block;
+    }
+    
+    .signature-section {
+        margin-top: 50px;
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .signature-box {
+        border-top: 1px solid #000;
+        width: 200px;
+        padding-top: 5px;
+        text-align: center;
+    }
+    
+    .print-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 999;
+    }
+    
+    @media screen {
+        .print-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            border: 1px solid #ddd;
+            background-color: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="no-print print-button">
+    <button onclick="window.print()" class="theme-button-primary btn">
+        <i class="bi bi-printer me-2"></i> Print
+    </button>
+    <button onclick="window.close()" class="theme-button-secondary btn ms-2">
+        <i class="bi bi-x me-2"></i> Close
+    </button>
+</div>
+
+<div style="background-color: #fff;" class="print-container">
+    <div class="print-header">
+        <img src="/static/img/logo.png" alt="Company Logo" class="company-logo" onerror="this.src='/static/img/placeholder-logo.png'; this.onerror=null;">
+        <h1>ORDER #{{ order.order_number }}</h1>
+    </div>
+    
+    <div class="order-meta">
+        <div class="meta-group">
+            <div class="meta-item">
+                <span class="meta-label">Order Date:</span>
+                {{ order.created_at|date:"F j, Y" }}
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Status:</span>
+                {{ order.status.name }}
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Delivery Date:</span>
+                {{ order.delivery_date|date:"F j, Y" }}
+            </div>
+        </div>
+        
+        <div class="meta-group">
+            <div class="meta-item">
+                <span class="meta-label">Contract:</span>
+                {{ order.contract.title }}
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Contract Reference:</span>
+                {{ order.contract.reference_number }}
+            </div>
+        </div>
+    </div>
+    
+    <div class="print-section">
+        <h3>Buyer Information</h3>
+        <div class="card p-3 mb-4">
+            <div class="meta-item">
+                <span class="meta-label">Name:</span>
+                {{ order.buyer.get_full_name|default:order.buyer.username }}
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Company:</span>
+                {{ order.buyer.profile.company_name|default:"N/A" }}
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Email:</span>
+                {{ order.buyer.email }}
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Phone:</span>
+                {{ order.buyer.profile.phone|default:"N/A" }}
+            </div>
+        </div>
+    </div>
+    
+    <div class="print-section">
+        <h3>Supplier Information</h3>
+        <div class="card p-3 mb-4">
+            <div class="meta-item">
+                <span class="meta-label">Name:</span>
+                {{ order.supplier.get_full_name|default:order.supplier.username }}
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Company:</span>
+                {{ order.supplier.profile.company_name|default:"N/A" }}
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Email:</span>
+                {{ order.supplier.email }}
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Phone:</span>
+                {{ order.supplier.profile.phone|default:"N/A" }}
+            </div>
+        </div>
+    </div>
+    
+    <div class="print-section">
+        <h3>Order Items</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order_items %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ item.unit_price }}</td>
+                    <td>${{ item.total_price }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No items available</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" class="text-end fw-bold">Subtotal:</td>
+                    <td>${{ order.subtotal|default:order.total_amount }}</td>
+                </tr>
+                {% if order.tax_amount %}
+                <tr>
+                    <td colspan="4" class="text-end fw-bold">Tax:</td>
+                    <td>${{ order.tax_amount }}</td>
+                </tr>
+                {% endif %}
+                {% if order.shipping_cost %}
+                <tr>
+                    <td colspan="4" class="text-end fw-bold">Shipping:</td>
+                    <td>${{ order.shipping_cost }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td colspan="4" class="text-end fw-bold">Total:</td>
+                    <td class="fw-bold">${{ order.total_amount }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    
+    {% if order.notes %}
+    <div class="print-section">
+        <h3>Notes</h3>
+        <div class="card p-3 mb-4">
+            {{ order.notes|linebreaks }}
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="signature-section">
+        <div class="signature-box">
+            <p>Authorized By</p>
+        </div>
+        <div class="signature-box">
+            <p>Received By</p>
+        </div>
+    </div>
+    
+    <div class="text-center mt-5">
+        <p><small>This document was printed on {{ now|date:"F j, Y" }} at {{ now|time:"H:i" }}</small></p>
+    </div>
+</div>
+
+<script>
+    // Auto-print when loaded if coming from print button
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('autoprint') === 'true') {
+            setTimeout(function() {
+                window.print();
+            }, 1000); // Slight delay to ensure page is fully loaded
+        }
+    });
+</script>
+{% endblock %}

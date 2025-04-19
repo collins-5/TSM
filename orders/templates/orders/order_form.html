@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% if form.instance.id %}
+        Edit Order
+    {% else %}
+        Create New Order
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 theme-container">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="theme-heading">
+                    {% if form.instance.id %}
+                        Edit Order
+                    {% else %}
+                        Create New Order for {{ contract.title }}
+                    {% endif %}
+                </h2>
+                <span class="badge bg-success">Status: Active</span>
+            </div>
+            
+            <div class="card border-0 shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-file-contract me-2"></i>
+                        <h5 class="mb-0">Contract Information</h5>
+                    </div>
+                </div>
+                <div class="card-body bg-light">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Contract:</strong> {{ contract.title }}</p>
+                            <p><strong>Supplier:</strong> {{ contract.supplier }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Total Value:</strong> ${{ contract.total_value }}</p>
+                            <p><strong>Status:</strong> {{ contract.status }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <form method="post" class="mb-5">
+                {% csrf_token %}
+                <div class="card border-0 shadow mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-shopping-cart me-2"></i>
+                            <h5 class="mb-0">Order Details</h5>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {{ form|crispy }}
+                    </div>
+                </div>
+                
+                <div class="card border-0 shadow">
+                    <div class="card-header bg-dark text-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-list me-2"></i>
+                                <h5 class="mb-0">Order Items</h5>
+                            </div>
+                            <button type="button" class="btn btn-success btn-sm" id="add-item">
+                                <i class="fas fa-plus me-1"></i> Add Item
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if formset %}
+                            {{ formset.management_form }}
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0" id="items-table">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Description</th>
+                                            <th>Quantity</th>
+                                            <th>Unit Price</th>
+                                            <th class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for form in formset %}
+                                        <tr class="item-form">
+                                            <td>
+                                                {{ form.id }}
+                                                {{ form.description }}
+                                                {% if form.description.errors %}
+                                                <div class="text-danger small">
+                                                    {{ form.description.errors }}
+                                                </div>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {{ form.quantity }}
+                                                {% if form.quantity.errors %}
+                                                <div class="text-danger small">
+                                                    {{ form.quantity.errors }}
+                                                </div>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {{ form.unit_price }}
+                                                {% if form.unit_price.errors %}
+                                                <div class="text-danger small">
+                                                    {{ form.unit_price.errors }}
+                                                </div>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-center">
+                                                {% if form.instance.pk %}
+                                                    <div class="form-check">
+                                                        {{ form.DELETE }}
+                                                        <label class="form-check-label" for="{{ form.DELETE.id_for_label }}">Delete</label>
+                                                    </div>
+                                                {% else %}
+                                                    <button type="button" class="btn btn-sm btn-outline-danger remove-form">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-warning m-3">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Please correct the errors in your form before adding items.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mt-4 d-flex justify-content-end gap-3">
+                    <a href="{% url 'contracts:contract_detail' contract.id %}" class="btn btn-secondary">
+                        <i class="fas fa-times me-1"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>
+                        {% if form.instance.id %}
+                            Update Order
+                        {% else %}
+                            Create Order
+                        {% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // Add item button functionality
+        $('#add-item').click(function() {
+            var formCount = parseInt($('#id_items-TOTAL_FORMS').val());
+            var row = $('.item-form:first').clone(true);
+            
+            // Update form index
+            row.find(':input').each(function() {
+                var name = $(this).attr('name').replace('-0-', '-' + formCount + '-');
+                var id = 'id_' + name;
+                $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+            });
+            
+            // Update labels
+            row.find('label').each(function() {
+                var newFor = $(this).attr('for').replace('-0-', '-' + formCount + '-');
+                $(this).attr('for', newFor);
+            });
+            
+            // Clear error messages
+            row.find('.text-danger').remove();
+            
+            // Add new form
+            $('#items-table tbody').append(row);
+            $('#id_items-TOTAL_FORMS').val(formCount + 1);
+        });
+        
+        // Remove button functionality
+        $('.remove-form').click(function() {
+            $(this).closest('tr').remove();
+            return false;
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

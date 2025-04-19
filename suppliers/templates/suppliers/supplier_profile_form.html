@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if form.instance.pk %}Update{% else %}Create{% endif %} Supplier Profile{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white p-8 rounded shadow-md mt-6">
+    <div class="mb-6">
+        <h2 class="text-2xl font-semibold">{% if form.instance.pk %}Update{% else %}Create{% endif %} Supplier Profile</h2>
+        <p class="text-gray-600">Please provide your company information and select relevant categories.</p>
+    </div>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+        <div class="mb-4 p-4 bg-red-100 border border-red-200 text-red-700 rounded">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Company Information -->
+            <div class="md:col-span-2">
+                <h3 class="text-xl font-semibold mb-4">Company Information</h3>
+            </div>
+            
+            <div class="mb-4">
+                <label for="{{ form.company_name.id_for_label }}" class="block text-gray-700 font-medium mb-2">Company Name*</label>
+                {{ form.company_name }}
+                {% if form.company_name.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.company_name.errors }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="mb-4">
+                <label for="{{ form.registration_number.id_for_label }}" class="block text-gray-700 font-medium mb-2">Registration Number*</label>
+                {{ form.registration_number }}
+                {% if form.registration_number.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.registration_number.errors }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="mb-4">
+                <label for="{{ form.tax_id.id_for_label }}" class="block text-gray-700 font-medium mb-2">Tax ID*</label>
+                {{ form.tax_id }}
+                {% if form.tax_id.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.tax_id.errors }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="mb-4">
+                <label for="{{ form.year_established.id_for_label }}" class="block text-gray-700 font-medium mb-2">Year Established</label>
+                {{ form.year_established }}
+                {% if form.year_established.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.year_established.errors }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="mb-4 md:col-span-2">
+                <label for="{{ form.company_address.id_for_label }}" class="block text-gray-700 font-medium mb-2">Company Address*</label>
+                {{ form.company_address }}
+                {% if form.company_address.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.company_address.errors }}</p>
+                {% endif %}
+            </div>
+            
+            <!-- Contact Information -->
+            <div class="md:col-span-2">
+                <h3 class="text-xl font-semibold mb-4 mt-6">Contact Information</h3>
+            </div>
+            
+            <div class="mb-4">
+                <label for="{{ form.contact_person.id_for_label }}" class="block text-gray-700 font-medium mb-2">Contact Person*</label>
+                {{ form.contact_person }}
+                {% if form.contact_person.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.contact_person.errors }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="mb-4">
+                <label for="{{ form.contact_email.id_for_label }}" class="block text-gray-700 font-medium mb-2">Contact Email*</label>
+                {{ form.contact_email }}
+                {% if form.contact_email.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.contact_email.errors }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="mb-4">
+                <label for="{{ form.contact_phone.id_for_label }}" class="block text-gray-700 font-medium mb-2">Contact Phone*</label>
+                {{ form.contact_phone }}
+                {% if form.contact_phone.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.contact_phone.errors }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="mb-4">
+                <label for="{{ form.website.id_for_label }}" class="block text-gray-700 font-medium mb-2">Website</label>
+                {{ form.website }}
+                {% if form.website.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.website.errors }}</p>
+                {% endif %}
+            </div>
+            
+            <!-- Business Details -->
+            <div class="md:col-span-2">
+                <h3 class="text-xl font-semibold mb-4 mt-6">Business Details</h3>
+            </div>
+            
+            <div class="mb-4 md:col-span-2">
+                <label for="{{ form.short_description.id_for_label }}" class="block text-gray-700 font-medium mb-2">Short Description*</label>
+                {{ form.short_description }}
+                <p class="text-gray-500 text-sm mt-1">Provide a brief description of your company and what you do.</p>
+                {% if form.short_description.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.short_description.errors }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="mb-4 md:col-span-2">
+                <label for="{{ form.capabilities.id_for_label }}" class="block text-gray-700 font-medium mb-2">Capabilities*</label>
+                {{ form.capabilities }}
+                <p class="text-gray-500 text-sm mt-1">Describe your company's capabilities, expertise, and notable achievements.</p>
+                {% if form.capabilities.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.capabilities.errors }}</p>
+                {% endif %}
+            </div>
+            
+            <!-- Categories Selection -->
+            <div class="md:col-span-2">
+                <h3 class="text-xl font-semibold mb-4 mt-6">Business Categories</h3>
+                <p class="text-gray-500 mb-4">Select all categories that apply to your business. These will be used to match you with relevant tenders.</p>
+                
+                <div class="bg-gray-50 p-4 rounded border border-gray-200">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {% for checkbox in form.categories %}
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                {{ checkbox.tag }}
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="{{ checkbox.id_for_label }}" class="font-medium text-gray-700">{{ checkbox.choice_label }}</label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% if form.categories.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.categories.errors }}</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="mt-8 flex justify-end">
+            <a href="{% url 'accounts:profile' %}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg mr-2">Cancel</a>
+            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg">
+                {% if form.instance.pk %}Update{% else %}Create{% endif %} Profile
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

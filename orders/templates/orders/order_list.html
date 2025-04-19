@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block title %}Orders{% endblock %}
+
+{% block content %}
+<div class="theme-container container py-5">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header with search and filters -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+                <h2 class="theme-heading mb-3 mb-md-0">Orders Management</h2>
+                
+                <div class="d-flex flex-column flex-md-row gap-2">
+                    <!-- Search Box -->
+                    <div class="input-group theme-card-primary rounded-3 p-1 mb-2 mb-md-0">
+                        <span class="input-group-text border-0 bg-transparent">
+                            <i class="bi bi-search theme-icon-primary"></i>
+                        </span>
+                        <input type="text" class="form-control border-0 bg-transparent shadow-none" placeholder="Search orders...">
+                    </div>
+                    
+                    <!-- Filter Button -->
+                    <button class="theme-button-secondary btn rounded-3 px-3 d-flex align-items-center">
+                        <i class="bi bi-funnel me-2"></i> Filters
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Stats Overview -->
+            <div class="row mb-4">
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="theme-card-primary p-3 rounded-3 shadow-sm">
+                        <div class="d-flex align-items-center">
+                            <div class="theme-icon-bg-primary p-2 rounded-circle me-3">
+                                <i class="bi bi-box-seam theme-icon-primary"></i>
+                            </div>
+                            <div>
+                                <h6 class="theme-text-muted mb-0">Total Orders</h6>
+                                <h4 class="theme-heading mb-0">{{ orders|length }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="theme-card-secondary p-3 rounded-3 shadow-sm">
+                        <div class="d-flex align-items-center">
+                            <div class="theme-icon-bg-secondary p-2 rounded-circle me-3">
+                                <i class="bi bi-clock-history theme-icon-secondary"></i>
+                            </div>
+                            <div>
+                                <h6 class="theme-text-muted mb-0">Pending</h6>
+                                <h4 class="theme-heading mb-0">
+                                    {% with pending_count=0 %}
+                                        {% for order in orders %}
+                                            {% if order.status.name == 'Pending' %}
+                                                {% with pending_count=pending_count|add:1 %}{% endwith %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {{ pending_count }}
+                                    {% endwith %}
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="theme-card-primary p-3 rounded-3 shadow-sm">
+                        <div class="d-flex align-items-center">
+                            <div class="theme-icon-bg-primary p-2 rounded-circle me-3">
+                                <i class="bi bi-check-circle theme-icon-primary"></i>
+                            </div>
+                            <div>
+                                <h6 class="theme-text-muted mb-0">Completed</h6>
+                                <h4 class="theme-heading mb-0">
+                                    {% with completed_count=0 %}
+                                        {% for order in orders %}
+                                            {% if order.status.name == 'Completed' %}
+                                                {% with completed_count=completed_count|add:1 %}{% endwith %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {{ completed_count }}
+                                    {% endwith %}
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <div class="theme-card-secondary p-3 rounded-3 shadow-sm">
+                        <div class="d-flex align-items-center">
+                            <div class="theme-icon-bg-secondary p-2 rounded-circle me-3">
+                                <i class="bi bi-currency-dollar theme-icon-secondary"></i>
+                            </div>
+                            <div>
+                                <h6 class="theme-text-muted mb-0">Total Value</h6>
+                                <h4 class="theme-heading mb-0">$
+                                    {% with total=0 %}
+                                        {% for order in orders %}
+                                            {% with total=total|add:order.total_amount %}{% endwith %}
+                                        {% endfor %}
+                                        {{ total }}
+                                    {% endwith %}
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% if orders %}
+                <div class="theme-feature card border-0 shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="theme-text-muted">
+                                    <tr>
+                                        <th class="ps-4">Order Number</th>
+                                        <th>Contract</th>
+                                        <th>{% if user.is_buyer %}Supplier{% else %}Buyer{% endif %}</th>
+                                        <th>Total Amount</th>
+                                        <th>Delivery Date</th>
+                                        <th>Status</th>
+                                        <th>Created</th>
+                                        <th class="text-end pe-4">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders %}
+                                    <tr class="order-row" data-order-number="{{ order.order_number }}">
+                                        <td class="ps-4 fw-medium theme-feature-heading">{{ order.order_number }}</td>
+                                        <td class="text-nowrap">
+                                            <div class="d-flex align-items-center">
+                                                <div class="theme-feature-icon-bg p-1 rounded-circle me-2">
+                                                    <i class="bi bi-file-earmark-text theme-feature-icon small"></i>
+                                                </div>
+                                                {{ order.contract.title|truncatechars:20 }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="rounded-circle bg-light me-2" style="width: 28px; height: 28px; overflow: hidden;">
+                                                    <i class="bi bi-person-circle text-secondary d-flex justify-content-center align-items-center h-100"></i>
+                                                </div>
+                                                <span>
+                                                {% if user == order.buyer %}
+                                                    {{ order.supplier }}
+                                                {% else %}
+                                                    {{ order.buyer }}
+                                                {% endif %}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="fw-medium">${{ order.total_amount }}</td>
+                                        <td>{{ order.delivery_date|date:"M d, Y" }}</td>
+                                        <td>
+                                            <span class="badge rounded-pill
+                                                {% if order.status.name == 'Pending' %}bg-warning text-dark
+                                                {% elif order.status.name == 'Approved' %}bg-success
+                                                {% elif order.status.name == 'Rejected' %}bg-danger
+                                                {% elif order.status.name == 'Completed' %}bg-info
+                                                {% else %}bg-secondary{% endif %}">
+                                                <i class="bi 
+                                                    {% if order.status.name == 'Pending' %}bi-hourglass-split
+                                                    {% elif order.status.name == 'Approved' %}bi-check-circle-fill
+                                                    {% elif order.status.name == 'Rejected' %}bi-x-circle-fill
+                                                    {% elif order.status.name == 'Completed' %}bi-trophy-fill
+                                                    {% else %}bi-dash-circle{% endif %} me-1"></i>
+                                                {{ order.status.name }}
+                                            </span>
+                                        </td>
+                                        <td>{{ order.created_at|date:"M d, Y" }}</td>
+                                        <td class="text-end pe-4">
+                                            <div class="dropdown">
+                                                <button class="theme-button-secondary btn btn-sm dropdown-toggle" type="button" id="dropdownMenuButton{{ order.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Actions
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton{{ order.id }}">
+                                                    <li><a class="dropdown-item" href="{% url 'orders:order_detail' order.id %}">
+                                                        <i class="bi bi-eye me-2"></i> View Details
+                                                    </a></li>
+                                                    <li><a class="dropdown-item" href="{% url 'orders:print_order' order.id %}?autoprint=true" target="_blank">
+                                                        <i class="bi bi-printer me-2"></i> Print Order
+                                                    </a></li>
+                                                    <li><a class="dropdown-item" href="{% url 'orders:download_order_pdf' order.id %}">
+                                                        <i class="bi bi-file-earmark-arrow-down me-2"></i> Download PDF
+                                                    </a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                   
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <div class="theme-text-muted">
+                        Showing <span class="fw-medium">{{ orders|length }}</span> orders
+                    </div>
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination mb-0">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            {% else %}
+                <div class="theme-testimonial p-5 rounded-3 text-center shadow-sm">
+                    <div class="theme-testimonial-icon-bg mx-auto mb-3 p-3 rounded-circle" style="width: 60px; height: 60px;">
+                        <i class="bi bi-inbox theme-testimonial-icon fs-4"></i>
+                    </div>
+                    <h4 class="theme-heading mb-3">No Orders Found</h4>
+                    <p class="theme-paragraph mb-4">You haven't created any orders yet. Start by creating your first order.</p>
+                    <a href="#" class="theme-button-primary btn btn-lg rounded-3 px-4">Create New Order</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Simple filter functionality (can be expanded)
+      // Simple filter functionality (can be expanded)
+      document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.querySelector('input[placeholder="Search orders..."]');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const rows = document.querySelectorAll('tbody tr.order-row');
+                
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                });
+            });
+        }
+        
+        // Print order functionality
+        const printButtons = document.querySelectorAll('.print-order-btn');
+        printButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const orderId = this.getAttribute('data-order-id');
+                
+                // Option 1: Open a new window with print-friendly version and trigger print
+                const printWindow = window.open(`/orders/${orderId}/print/`, '_blank');
+                printWindow.addEventListener('load', function() {
+                    printWindow.print();
+                });
+                
+                // Option 2: Use a hidden iframe approach (alternative)
+                /*
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = `/orders/${orderId}/print/`;
+                document.body.appendChild(iframe);
+                iframe.onload = function() {
+                    iframe.contentWindow.print();
+                    setTimeout(() => {
+                        document.body.removeChild(iframe);
+                    }, 1000);
+                };
+                */
+            });
+        });
+    });
+</script>
+{% endblock %}

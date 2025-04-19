@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+{% block title %}Home - Tender & Supplier Management System{% endblock %}
+
+{% block content %}
+<div class="theme-container min-h-screen p-4 md:p-8">
+    <!-- Hero Section with Modern Animation -->
+    <div class="text-center mb-16 relative overflow-hidden rounded-2xl shadow-2xl">
+        <div class="theme-hero-bg p-10 md:p-16 backdrop-blur-sm">
+            <h1 class="text-4xl md:text-5xl font-bold theme-heading mb-4 tracking-tight animate-fade-in">
+                Tender & Supplier <span class="theme-gradient-text">Management System</span>
+            </h1>
+            <p class="text-xl md:text-2xl theme-paragraph mb-10 max-w-3xl mx-auto animate-fade-in-delay">
+                A unified digital platform for the entire procurement lifecycle
+            </p>
+            
+            <!-- Search Bar -->
+            <div class="max-w-2xl mx-auto mb-8 animate-fade-in-delay-2">
+                <div class="relative theme-search-container rounded-full shadow-lg flex items-center">
+                    <input type="text" placeholder="Search for tenders or suppliers..." 
+                           class="w-full py-4 px-6 rounded-full theme-search-input focus:outline-none">
+                    <button class="absolute right-2 p-3 theme-search-button rounded-full">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- User Type Selection Cards (with subtle hover effects) -->
+    <div class="flex flex-col md:flex-row justify-center gap-8 mb-16">
+        <div class="theme-card-primary p-8 rounded-2xl shadow-xl flex-1 transition-all duration-300 hover:translate-y-[-8px] hover:shadow-2xl group">
+            <div class="inline-flex justify-center items-center w-16 h-16 theme-icon-bg-primary rounded-full mb-6 transition-transform group-hover:scale-110">
+                <i class="fas fa-building text-2xl theme-icon-primary"></i>
+            </div>
+            <h2 class="text-2xl font-semibold theme-heading-primary mb-3">For Buyers</h2>
+            <p class="theme-paragraph mb-6">Create tenders, manage contracts, and streamline your procurement process with powerful tools.</p>
+            <a href="{% url 'accounts:register' %}" class="inline-block py-3 px-8 theme-button-primary rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 group-hover:shadow-lg">
+                <i class="fas fa-user-plus mr-2"></i>Register as Buyer
+            </a>
+        </div>
+        
+        <div class="theme-card-secondary p-8 rounded-2xl shadow-xl flex-1 transition-all duration-300 hover:translate-y-[-8px] hover:shadow-2xl group">
+            <div class="inline-flex justify-center items-center w-16 h-16 theme-icon-bg-secondary rounded-full mb-6 transition-transform group-hover:scale-110">
+                <i class="fas fa-truck text-2xl theme-icon-secondary"></i>
+            </div>
+            <h2 class="text-2xl font-semibold theme-heading-secondary mb-3">For Suppliers</h2>
+            <p class="theme-paragraph mb-6">Find opportunities, submit bids, and grow your business with targeted contract matches.</p>
+            <a href="{% url 'accounts:register' %}" class="inline-block py-3 px-8 theme-button-secondary rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-all duration-300 group-hover:shadow-lg">
+                <i class="fas fa-user-plus mr-2"></i>Register as Supplier
+            </a>
+        </div>
+    </div>
+    
+    <!-- Stats Counter Section -->
+    <div class="theme-stats-container rounded-2xl shadow-lg p-8 mb-16">
+        <div class="text-center mb-8">
+            <h2 class="text-2xl font-semibold theme-heading">Our Platform Impact</h2>
+            <p class="theme-paragraph">Growing network of procurement professionals and suppliers</p>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="text-center">
+                <div class="theme-stat-value text-3xl font-bold mb-2">5,000+</div>
+                <div class="theme-stat-label">Active Tenders</div>
+            </div>
+            <div class="text-center">
+                <div class="theme-stat-value text-3xl font-bold mb-2">10,000+</div>
+                <div class="theme-stat-label">Registered Suppliers</div>
+            </div>
+            <div class="text-center">
+                <div class="theme-stat-value text-3xl font-bold mb-2">3,500+</div>
+                <div class="theme-stat-label">Organizations</div>
+            </div>
+            <div class="text-center">
+                <div class="theme-stat-value text-3xl font-bold mb-2">$2B+</div>
+                <div class="theme-stat-label">Contract Value</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Features Section with Modern Cards -->
+    <div class="mb-16">
+        <div class="text-center mb-10">
+            <h2 class="text-2xl md:text-3xl font-semibold theme-heading mb-3">Powerful Platform Features</h2>
+            <p class="theme-paragraph max-w-3xl mx-auto">Everything you need to streamline procurement and supplier management</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="theme-feature p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-xl">
+                <div class="theme-feature-icon-bg rounded-full p-4 w-20 h-20 flex items-center justify-center mb-5">
+                    <svg class="w-10 h-10 theme-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-3 theme-feature-heading">Efficient Tender Management</h3>
+                <p class="theme-paragraph mb-4">Create, publish, and manage tenders with ease. Track all stages of the procurement process.</p>
+                <div class="theme-feature-list space-y-2">
+                    <div class="flex items-center">
+                        <svg class="w-4 h-4 theme-feature-check mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>Customizable tender templates</span>
+                    </div>
+                    <div class="flex items-center">
+                        <svg class="w-4 h-4 theme-feature-check mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>Automated notifications</span>
+                    </div>
+                    <div class="flex items-center">
+                        <svg class="w-4 h-4 theme-feature-check mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>Document management</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="theme-feature p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-xl">
+                <div class="theme-feature-icon-bg rounded-full p-4 w-20 h-20 flex items-center justify-center mb-5">
+                    <svg class="w-10 h-10 theme-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-3 theme-feature-heading">Supplier Relationship</h3>
+                <p class="theme-paragraph mb-4">Build stronger relationships with qualified suppliers and improve collaboration.</p>
+                <div class="theme-feature-list space-y-2">
+                    <div class="flex items-center">
+                        <svg class="w-4 h-4 theme-feature-check mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>Supplier performance ratings</span>
+                    </div>
+                    <div class="flex items-center">
+                        <svg class="w-4 h-4 theme-feature-check mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>Communication tools</span>
+                    </div>
+                    <div class="flex items-center">
+                        <svg class="w-4 h-4 theme-feature-check mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>Supplier verification</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="theme-feature p-6 rounded-xl shadow-md transition-all duration-300 hover:shadow-xl">
+                <div class="theme-feature-icon-bg rounded-full p-4 w-20 h-20 flex items-center justify-center mb-5">
+                    <svg class="w-10 h-10 theme-feature-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-3 theme-feature-heading">Detailed Analytics</h3>
+                <p class="theme-paragraph mb-4">Gain insights with comprehensive reports and analytics on procurement activities.</p>
+                <div class="theme-feature-list space-y-2">
+                    <div class="flex items-center">
+                        <svg class="w-4 h-4 theme-feature-check mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>Interactive dashboards</span>
+                    </div>
+                    <div class="flex items-center">
+                        <svg class="w-4 h-4 theme-feature-check mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>Customizable reports</span>
+                    </div>
+                    <div class="flex items-center">
+                        <svg class="w-4 h-4 theme-feature-check mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>Procurement insights</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- How It Works Section (NEW) -->
+    <div class="theme-how-it-works p-8 rounded-2xl shadow-lg mb-16">
+        <div class="text-center mb-10">
+            <h2 class="text-2xl md:text-3xl font-semibold theme-heading mb-3">How It Works</h2>
+            <p class="theme-paragraph max-w-3xl mx-auto">Simple steps to optimize your procurement process</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="flex flex-col items-center text-center">
+                <div class="theme-step-number w-12 h-12 rounded-full flex items-center justify-center mb-4 text-xl font-bold">1</div>
+                <h3 class="text-lg font-semibold mb-2 theme-heading">Register</h3>
+                <p class="theme-paragraph">Create your account as a buyer or supplier</p>
+            </div>
+            
+            <div class="flex flex-col items-center text-center">
+                <div class="theme-step-number w-12 h-12 rounded-full flex items-center justify-center mb-4 text-xl font-bold">2</div>
+                <h3 class="text-lg font-semibold mb-2 theme-heading">Create Profile</h3>
+                <p class="theme-paragraph">Complete your organization profile</p>
+            </div>
+            
+            <div class="flex flex-col items-center text-center">
+                <div class="theme-step-number w-12 h-12 rounded-full flex items-center justify-center mb-4 text-xl font-bold">3</div>
+                <h3 class="text-lg font-semibold mb-2 theme-heading">Publish/Find</h3>
+                <p class="theme-paragraph">Post tenders or find opportunities</p>
+            </div>
+            
+            <div class="flex flex-col items-center text-center">
+                <div class="theme-step-number w-12 h-12 rounded-full flex items-center justify-center mb-4 text-xl font-bold">4</div>
+                <h3 class="text-lg font-semibold mb-2 theme-heading">Manage</h3>
+                <p class="theme-paragraph">Track and manage the entire process</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CTA Section with Modern Design -->
+    <div class="theme-cta p-10 rounded-2xl shadow-lg mb-16 relative overflow-hidden">
+        <div class="theme-cta-bg absolute top-0 left-0 w-full h-full -z-10"></div>
+        <div class="relative z-10 text-center max-w-3xl mx-auto">
+            <h2 class="text-2xl md:text-3xl font-semibold theme-heading mb-4">Start Optimizing Your Procurement Process Today</h2>
+            <p class="theme-paragraph mb-8 text-lg">Join organizations that have simplified their tender management and supplier relations with our platform.</p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="{% url 'accounts:login' %}" class="py-3 px-8 theme-button-primary rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 transition-all duration-300">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Login
+                </a>
+                <a href="{% url 'accounts:register' %}" class="py-3 px-8 theme-button-secondary rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 transition-all duration-300">
+                    <i class="fas fa-user-plus mr-2"></i>Register Now
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Testimonials Section - Updated with Carousel Style -->
+    <div class="mb-16">
+        <div class="text-center mb-8">
+            <h2 class="text-2xl font-semibold theme-heading mb-3">Trusted by Organizations</h2>
+            <p class="theme-paragraph max-w-2xl mx-auto">See what our clients say about our platform</p>
+        </div>
+        
+        <div class="theme-testimonial-carousel">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="theme-testimonial p-6 rounded-xl shadow-md text-left border-l-4 border-blue-500 transition-all hover:shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 theme-testimonial-icon-bg rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-quote-left theme-testimonial-icon text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold theme-heading">Global Procurement Ltd</h4>
+                            <p class="text-sm theme-text-muted">Manufacturing Industry</p>
+                        </div>
+                    </div>
+                    <p class="theme-paragraph italic mb-3">"This system transformed our procurement process, saving time and resources while improving our supplier relationships."</p>
+                    <div class="flex theme-testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                
+                <div class="theme-testimonial p-6 rounded-xl shadow-md text-left border-l-4 border-green-500 transition-all hover:shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 theme-testimonial-icon-bg-alt rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-quote-left theme-testimonial-icon-alt text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold theme-heading">TechSupply Partners</h4>
+                            <p class="text-sm theme-text-muted">IT Solutions Provider</p>
+                        </div>
+                    </div>
+                    <p class="theme-paragraph italic mb-3">"As a supplier, we've increased our contract opportunities by 40% since joining the platform. Highly recommended!"</p>
+                    <div class="flex theme-testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pagination Dots for Carousel -->
+            <div class="flex justify-center mt-6">
+                <span class="theme-pagination-dot active mx-1"></span>
+                <span class="theme-pagination-dot mx-1"></span>
+                <span class="theme-pagination-dot mx-1"></span>
+            </div>
+        </div>
+    </div>
+    
+
+
+{% endblock %}

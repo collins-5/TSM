@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mx-auto px-4 py-8 theme-container">
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold mb-2 theme-heading">Update Contract Status</h1>
+        <p class="theme-text-muted">Contract: {{ contract.title }}</p>
+    </div>
+    <div class="theme-feature shadow-md rounded-lg p-6">
+        <form method="post" action="{% url 'contracts:contract_status_update' contract.id %}">
+            {% csrf_token %}
+            <div class="mb-6">
+                <label for="status_id" class="block text-sm font-medium theme-paragraph mb-2">
+                    Select New Status
+                </label>
+                <select id="status_id" name="status_id" class="w-full rounded-md border border-gray-300 dark:border-gray-700 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:text-white">
+                    {% for status in statuses %}
+                        <option value="{{ status.id }}" {% if status == contract.status %}selected{% endif %}>
+                            {{ status.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                {% if status.description %}
+                    <p class="mt-1 text-sm theme-text-muted">{{ status.description }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="theme-card-primary p-4 rounded-lg mb-6">
+                <div class="flex items-start">
+                    <div class="theme-icon-bg-primary p-2 rounded-full mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-icon-primary" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-1 9a1 1 0 01-1-1v-4a1 1 0 112 0v4a1 1 0 01-1 1z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="font-medium theme-paragraph mb-1">Status Change Information</h4>
+                        <p class="theme-paragraph text-sm">Updating the contract status will notify all relevant parties and may trigger workflow actions based on the new status.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex justify-between">
+                <a href="{% url 'contracts:contract_detail' contract.id %}" class="theme-button-secondary flex items-center px-4 py-2 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                    </svg>
+                    Cancel
+                </a>
+                <button type="submit" class="theme-button-primary flex items-center px-4 py-2 rounded">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    Update Status
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,115 @@
+<!-- contracts/templates/contracts/contract_form_manual.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold mb-4">Create New Contract</h1>
+    </div>
+
+    <div class="bg-white shadow-md rounded-lg p-6">
+        <form method="post" action="">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            
+            <div class="mb-6">
+                <label for="supplier_select" class="block text-sm font-medium text-gray-700 mb-2">
+                    Select Supplier
+                </label>
+                <select id="supplier_select" name="supplier_id" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
+                    <option value="">-- Select Supplier --</option>
+                    {% for supplier in suppliers %}
+                        <option value="{{ supplier.id }}">{{ supplier.get_full_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="mb-4">
+                    <label for="{{ form.title.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Contract Title
+                    </label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.title.errors }}</p>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-4">
+                    <label for="{{ form.total_value.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Total Value
+                    </label>
+                    {{ form.total_value }}
+                    {% if form.total_value.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.total_value.errors }}</p>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-4">
+                    <label for="{{ form.start_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Start Date
+                    </label>
+                    {{ form.start_date }}
+                    {% if form.start_date.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.start_date.errors }}</p>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-4">
+                    <label for="{{ form.end_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        End Date
+                    </label>
+                    {{ form.end_date }}
+                    {% if form.end_date.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.end_date.errors }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="{{ form.scope_of_work.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                    Scope of Work
+                </label>
+                {{ form.scope_of_work }}
+                {% if form.scope_of_work.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.scope_of_work.errors }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="mb-4">
+                <label for="{{ form.payment_terms.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                    Payment Terms
+                </label>
+                {{ form.payment_terms }}
+                {% if form.payment_terms.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.payment_terms.errors }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="mb-4">
+                <label for="{{ form.terms_and_conditions.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                    Terms and Conditions
+                </label>
+                {{ form.terms_and_conditions }}
+                {% if form.terms_and_conditions.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.terms_and_conditions.errors }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="flex justify-end">
+                <a href="{% url 'contracts:contract_list' %}" class="bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded mr-2">
+                    Cancel
+                </a>
+                <button type="submit" name="create_contract" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded">
+                    Create Contract
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Order #{{ order.order_number }}</title>
+    <style>
+        @page {
+            size: letter portrait;
+            margin: 2.5cm;
+            @frame header {
+                -pdf-frame-content: headerContent;
+                top: 0.5cm;
+                margin-left: 1cm;
+                margin-right: 1cm;
+                height: 3cm;
+            }
+            @frame footer {
+                -pdf-frame-content: footerContent;
+                bottom: 0.5cm;
+                margin-left: 1cm;
+                margin-right: 1cm;
+                height: 1cm;
+            }
+        }
+        
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            color: #333;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 18px;
+            color: #2b6cb0;
+            margin-bottom: 10px;
+        }
+        
+        h3 {
+            font-size: 14px;
+            color: #2b6cb0;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 5px;
+        }
+        
+        .order-meta {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        .order-meta td {
+            vertical-align: top;
+            padding: 5px;
+        }
+        
+        .meta-label {
+            font-weight: bold;
+            display: block;
+        }
+        
+        .section {
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: #f8fafc;
+        }
+        
+        table.items {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        table.items th {
+            background-color: #f1f5f9;
+            text-align: left;
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            font-size: 12px;
+        }
+        
+        table.items td {
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            font-size: 11px;
+        }
+        
+        .text-right {
+            text-align: right;
+        }
+        
+        .footer {
+            font-size: 9px;
+            text-align: center;
+            color: #64748b;
+        }
+        
+        .signature-section {
+            margin-top: 40px;
+            width: 100%;
+        }
+        
+        .signature-box {
+            border-top: 1px solid #000;
+            width: 200px;
+            padding-top: 5px;
+            text-align: center;
+            display: inline-block;
+            margin: 0 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="headerContent" class="header">
+        <img src="{{ STATIC_URL }}img/logo.png" height="50" alt="Company Logo">
+        <h1>ORDER #{{ order.order_number }}</h1>
+    </div>
+    
+    <table class="order-meta">
+        <tr>
+            <td width="50%">
+                <div class="meta-item">
+                    <span class="meta-label">Order Date:</span>
+                    {{ order.created_at|date:"F j, Y" }}
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Status:</span>
+                    {{ order.status.name }}
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Delivery Date:</span>
+                    {{ order.delivery_date|date:"F j, Y" }}
+                </div>
+            </td>
+            <td width="50%">
+                <div class="meta-item">
+                    <span class="meta-label">Contract:</span>
+                    {{ order.contract.title }}
+                </div>
+                <div class="meta-item">
+                    <!-- <span class="meta-label">Contract Reference:</span> -->
+                    {{ order.contract.reference_number }}
+                </div>
+            </td>
+        </tr>
+    </table>
+    
+    <div class="section">
+        <h3>Buyer Information</h3>
+        <div class="card">
+            <div class="meta-item">
+                <span class="meta-label">Name:</span>
+                {{ order.buyer.get_full_name|default:order.buyer.username }}
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Company:</span>
+                {{ order.buyer.profile.company_name|default:"N/A" }}
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Email:</span>
+                {{ order.buyer.email }}
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Phone:</span>
+                {{ order.buyer.profile.phone|default:"N/A" }}
+            </div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h3>Supplier Information</h3>
+        <div class="card">
+            <div class="meta-item">
+                <span class="meta-label">Name:</span>
+                {{ order.supplier.get_full_name|default:order.supplier.username }}
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Company:</span>
+                {{ order.supplier.profile.company_name|default:"N/A" }}
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Email:</span>
+                {{ order.supplier.email }}
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Phone:</span>
+                {{ order.supplier.profile.phone|default:"N/A" }}
+            </div>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h3>Order Items</h3>
+        <table class="items">
+            <thead>
+                <tr>
+                    <th width="5%">#</th>
+                    <th width="45%">Description</th>
+                    <th width="15%">Quantity</th>
+                    <th width="15%">Unit Price</th>
+                    <th width="20%">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order_items %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>${{ item.unit_price }}</td>
+                    <td>${{ item.total_price }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center">No items available</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" class="text-right" style="text-align: right; font-weight: bold;">Subtotal:</td>
+                    <td>${{ order.subtotal|default:order.total_amount }}</td>
+                </tr>
+                {% if order.tax_amount %}
+                <tr>
+                    <td colspan="4" class="text-right" style="text-align: right; font-weight: bold;">Tax:</td>
+                    <td>${{ order.tax_amount }}</td>
+                </tr>
+                {% endif %}
+                {% if order.shipping_cost %}
+                <tr>
+                    <td colspan="4" class="text-right" style="text-align: right; font-weight: bold;">Shipping:</td>
+                    <td>${{ order.shipping_cost }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td colspan="4" class="text-right" style="text-align: right; font-weight: bold;">Total:</td>
+                    <td style="font-weight: bold;">${{ order.total_amount }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    
+    {% if order.notes %}
+    <div class="section">
+        <h3>Notes</h3>
+        <div class="card">
+            {{ order.notes|linebreaks }}
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="signature-section" style="text-align: center;">
+        <div class="signature-box">
+            <p>Authorized By</p>
+        </div>
+        <div class="signature-box">
+            <p>Received By</p>
+        </div>
+    </div>
+    
+    <div id="footerContent" class="footer">
+        <p>Order #{{ order.order_number }} - Generated on {{ now|date:"F j, Y" }} at {{ now|time:"H:i" }}</p>
+        <p>This is a computer-generated document. No signature is required.</p>
+    </div>
+</body>
+</html>

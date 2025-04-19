@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Issue: {{ issue.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>Issue: {{ issue.title }}</h2>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5>Issue Details</h5>
+                        <span class="badge 
+                            {% if issue.status == 'open' %}bg-danger
+                            {% elif issue.status == 'in_progress' %}bg-warning
+                            {% elif issue.status == 'resolved' %}bg-success
+                            {% else %}bg-secondary{% endif %} fs-6">
+                            {{ issue.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p><strong>Order:</strong> 
+                                <a href="{% url 'orders:order_detail' order.id %}">
+                                    {{ order.order_number }}
+                                </a>
+                            </p>
+                            <p><strong>Reported By:</strong> {{ issue.raised_by }}</p>
+                            <p><strong>Assigned To:</strong> {{ issue.assigned_to }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Priority:</strong> {{ issue.get_priority_display }}</p>
+                            <p><strong>Reported:</strong> {{ issue.created_at }}</p>
+                            {% if issue.resolved_at %}
+                            <p><strong>Resolved:</strong> {{ issue.resolved_at }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Description:</h6>
+                        <div class="p-3 bg-light rounded">
+                            {{ issue.description|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% if is_assignee or is_creator %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Update Issue</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        
+                        <button type="submit" class="btn btn-primary">Update Issue</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="{% url 'orders:order_detail' order.id %}" class="list-group-item list-group-item-action">
+                            Back to Order
+                        </a>
+                        <a href="{% url 'orders:order_list' %}" class="list-group-item list-group-item-action">
+                            Back to Orders List
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5>Related Information</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Contract:</strong> 
+                        <a href="{% url 'contracts:contract_detail' order.contract.id %}">
+                            {{ order.contract.title|truncatechars:30 }}
+                        </a>
+                    </p>
+                    <p><strong>Buyer:</strong> {{ order.buyer }}</p>
+                    <p><strong>Supplier:</strong> {{ order.supplier }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

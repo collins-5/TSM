@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Supplier Profile -->
+    <div class="bg-white rounded-lg shadow overflow-hidden mb-8">
+        <div class="p-6 border-b">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold">{{ supplier.company_name }}</h1>
+                
+                {% if is_owner %}
+                    <a href="{% url 'suppliers:supplier_profile_edit' %}" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded">
+                        Edit Profile
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="p-6">
+            <div class="flex flex-wrap -mx-4">
+                <!-- Supplier Info -->
+                <div class="w-full lg:w-2/3 px-4">
+                    <div class="mb-6">
+                        <h2 class="text-lg font-semibold mb-2">About</h2>
+                        <p class="text-gray-700">{{ supplier.description }}</p>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h2 class="text-lg font-semibold mb-2">Contact Information</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-gray-600 text-sm">Email</p>
+                                <p class="font-medium">{{ supplier.contact_email }}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600 text-sm">Phone</p>
+                                <p class="font-medium">{{ supplier.contact_phone }}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600 text-sm">Address</p>
+                                <p class="font-medium">{{ supplier.address }}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600 text-sm">Website</p>
+                                <p class="font-medium">
+                                    {% if supplier.website %}
+                                        <a href="{{ supplier.website }}" target="_blank" class="text-blue-600 hover:underline">
+                                            {{ supplier.website }}
+                                        </a>
+                                    {% else %}
+                                        Not provided
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h2 class="text-lg font-semibold mb-2">Categories</h2>
+                        <div class="flex flex-wrap">
+                            {% for category in supplier.categories.all %}
+                                <span class="inline-block bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm font-medium mr-2 mb-2">
+                                    {{ category.name }}
+                                </span>
+                            {% empty %}
+                                <p class="text-gray-600">No categories specified</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Rating Info -->
+                <div class="w-full lg:w-1/3 px-4">
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <div class="text-center mb-4">
+                            <div class="text-5xl font-bold text-blue-600">{{ avg_rating|floatformat:1 }}</div>
+                            <div class="text-yellow-500 flex justify-center mt-2">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= avg_rating|floatformat:"0" %}
+                                        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+                                        </svg>
+                                    {% else %}
+                                        <svg class="w-6 h-6 fill-current text-gray-300" viewBox="0 0 24 24">
+                                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+                                        </svg>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div class="text-gray-600 mt-1">Based on {{ rating_count }} ratings</div>
+                        </div>
+                        
+                        {% if rating_form %}
+                            <div class="border-t pt-4 mt-4">
+                                <h3 class="font-semibold mb-3">Rate this Supplier</h3>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="submit_rating" value="1">
+                                    
+                                    <div class="mb-3">
+                                        <label for="id_rating" class="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+                                        {{ rating_form.rating }}
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="id_comment" class="block text-sm font-medium text-gray-700 mb-1">Comment</label>
+                                        {{ rating_form.comment }}
+                                    </div>
+                                    
+                                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded">
+                                        {% if user_rating %}Update{% else %}Submit{% endif %} Rating
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+   
+    <!-- Ratings Section -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="p-6 border-b">
+            <h2 class="text-xl font-bold">Ratings & Reviews</h2>
+        </div>
+        
+        <div class="p-6">
+            {% if ratings %}
+                <div class="space-y-6">
+                    {% for rating in ratings %}
+                        <div class="border-b pb-4 last:border-0 last:pb-0">
+                            <div class="flex items-center mb-2">
+                                <div class="text-yellow-500 flex">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= rating.rating %}
+                                            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+                                            </svg>
+                                        {% else %}
+                                            <svg class="w-5 h-5 fill-current text-gray-300" viewBox="0 0 24 24">
+                                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+                                            </svg>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <span class="ml-2 font-semibold">{{ rating.rated_by.get_full_name }}</span>
+                                <span class="ml-2 text-gray-500 text-sm">{{ rating.created_at|date:"M d, Y" }}</span>
+                            </div>
+                            
+                            {% if rating.comment %}
+                                <p class="text-gray-700">{{ rating.comment }}</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-gray-600 text-center">No reviews available yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
